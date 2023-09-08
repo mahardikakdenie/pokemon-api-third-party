@@ -53,6 +53,12 @@ class FavoriteController extends Controller
             $pokemon = $pokemonResponse['forms'][0];
             $abilities = $pokemonResponse['abilities'];
 
+            // Validation
+            $findPokemon = Favorite::where('name', $pokemon['name'])->first();
+            if ($findPokemon) {
+                return Json::exception("This Pokemon is already in the Favorites list");
+            }
+
             $pokemonFavorite = new Favorite();
             $pokemonFavorite->name = $pokemon['name'];
             $pokemonFavorite->url = $pokemon['url'];
