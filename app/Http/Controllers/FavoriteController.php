@@ -21,7 +21,7 @@ class FavoriteController extends Controller
     {
         try {
             $favorites = Favorite::entities($request->entities)
-                ->get();
+                ->paginate($request->input('paginate', 8));
 
             return Json::response($favorites);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {

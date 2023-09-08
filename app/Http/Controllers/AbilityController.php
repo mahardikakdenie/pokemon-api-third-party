@@ -14,7 +14,8 @@ class AbilityController extends Controller
     public function index(Request $request)
     {
         try {
-            $abilities = Ability::entities($request->entities)->get();
+            $abilities = Ability::entities($request->entities)
+                ->paginate($request->input('paginate', 8));;
             return Json::response($abilities);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return Json::exception('Error Exceptions ' . $debug = env('APP_DEBUG', false) == true ? $e : '');

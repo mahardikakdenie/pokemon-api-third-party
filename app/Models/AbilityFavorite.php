@@ -10,7 +10,7 @@ class AbilityFavorite extends Model
     use HasFactory;
     protected $table = 'ability_have_favorites';
 
-    function favorite()
+    function pokemon()
     {
         return $this->belongsTo(Favorite::class, 'favorite_id');
     }
