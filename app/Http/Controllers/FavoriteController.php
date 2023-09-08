@@ -134,6 +134,26 @@ class FavoriteController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $favorite = Favorite::findOrFail($id);
+            $abilityFavorite = AbilityFavorite::where('favorite_id', $favorite->id)->get();
+
+            foreach ($abilityFavorite as $key => $value) {
+                $value->delete();
+            }
+            $favorite->delete();
+            DB::commit();
+            return Json::response($favorite);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            DB::rollBack();
+            return Json::exception('Error Exceptions ' . $debug = env('APP_DEBUG', false) == true ? $e : '');
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollBack();
+            return Json::exception('Error Query ' . $debug = env('APP_DEBUG', false) == true ? $e : '');
+        } catch (\ErrorException $e) {
+            DB::rollBack();
+            return Json::exception('Error Exception ' . $debug = env('APP_DEBUG', false) == true ? $e : '');
+        }
     }
 }

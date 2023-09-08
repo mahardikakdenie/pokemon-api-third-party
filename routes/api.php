@@ -23,6 +23,7 @@ Route::prefix('pokemon')->group(function () {
     Route::prefix('favorite')->group(function () {
         Route::get('', [FavoriteController::class, 'index']);
         Route::post('', [FavoriteController::class, 'store']);
+        Route::delete('{id}', [FavoriteController::class, 'destroy']);
     });
     // Ability Route Api
     Route::prefix('ability')->group(function () {
