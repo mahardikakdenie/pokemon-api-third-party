@@ -37,6 +37,7 @@ class PokemonController extends Controller
             $limit = $request->input('limit', 8);
             $offset = $request->input('offset', 0);
 
+
             // get data from Api
             $res = Helper::get($this->endpoint, compact('limit', 'offset'));
             $data = $res['results'];
@@ -44,8 +45,10 @@ class PokemonController extends Controller
                 $pokemon = Helper::get("{$this->endpoint}/" . $curr['name']);
                 $curr['abilities'] = $pokemon['abilities'];
                 $curr['is_favorite'] = false;
-                if (Favorite::where('name', $curr['name'])->exists()) {
+                $favorite = Favorite::where('name', $curr['name']);;
+                if ($favorite->exists()) {
                     $curr['is_favorite'] = true;
+                    $curr['favorite_id'] = $favorite->first()->id;
                 }
                 return $curr;
             }, $data);
