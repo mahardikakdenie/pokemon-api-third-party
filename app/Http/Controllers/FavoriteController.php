@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\lib\Helper;
+use App\Http\Lib\Helper;
 use App\Models\Ability;
 use App\Models\AbilityFavorite;
 use App\Models\AbiltyFavorite;

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Http\lib\Helper;
+use App\Http\Lib\Helper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
