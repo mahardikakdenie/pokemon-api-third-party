@@ -10,28 +10,49 @@ use App\Http\Lib\Helper;
 use App\Models\Ability;
 use App\Models\Favorite;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class PokemonController extends Controller
 {
     private $endpoint = 'https://pokeapi.co/api/v2/pokemon';
     /**
      * Display a listing of the resource.
+     * @param Request 
      */
     public function index(Request $request)
     {
         try {
-            $res = Helper::get($this->endpoint, [
-                'limit' => $request->input('limit', 20),
-                'offset' => $request->input('offset', 0),
+            // Create RULES VALIDATION
+            $validator = Validator::make($request->all(), [
+                'limit' => 'integer|min:1',
+                'offset' => 'integer|min:0',
             ]);
+
+            // Checking Validation
+            if ($validator->fails()) {
+                return Json::exception($validator->errors()->first());
+            }
+
+            // receive limit and offset value
+            $limit = $request->input('limit', 8);
+            $offset = $request->input('offset', 0);
+
+            // get data from Api
+            $res = Helper::get($this->endpoint, compact('limit', 'offset'));
             $data = $res['results'];
+
+            $data = $res['results'];
+
+            $pokemons = array_filter($data, function ($curr) {
+                return !Favorite::where('name', $curr['name'])->exists();
+            });
+
             $result = array_map(function ($curr) {
                 $pokemon = Helper::get("{$this->endpoint}/" . $curr['name']);
-                $detail =
-                    $curr['abilities'] = $pokemon['abilities'];
-
+                $curr['abilities'] = $pokemon['abilities'];
                 return $curr;
-            }, $data);
+            }, $pokemons);
+
             return Json::response($result);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return Json::exception('Error Exceptions ' . $debug = env('APP_DEBUG', false) == true ? $e : '');
