@@ -10,6 +10,7 @@ use App\Models\Favorite;
 use Brryfrmnn\Transformers\Json;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 
 class FavoriteController extends Controller
 {
@@ -21,6 +22,12 @@ class FavoriteController extends Controller
     {
         try {
             $favorites = Favorite::entities($request->entities)
+                ->whereHas('favorite.ability', function (Builder $query) use ($request) {
+                    if ($request->ability_name) {
+                        $query->where('name', $request->ability_name);
+                    }
+                    return $query;
+                })
                 ->paginate($request->input('paginate', 8));
 
             return Json::response($favorites);
@@ -68,8 +75,8 @@ class FavoriteController extends Controller
             foreach ($abilities as $key => $value) {
                 $url = $value['ability']['url'];
                 $name = $value['ability']['name'];
-                $findAbilit = Ability::where('name', $name)->first();
-                if (!$findAbilit) {
+                $findAbility = Ability::where('name', $name)->first();
+                if (!$findAbility) {
                     $ability = new Ability();
                     $ability->name = $name;
                     $ability->url = $url;
@@ -84,7 +91,7 @@ class FavoriteController extends Controller
                 } else {
                     $abilityFavorite = new AbilityFavorite();
                     $abilityFavorite->favorite_id = $pokemonFavorite->id;
-                    $abilityFavorite->ability_id = $findAbilit->id;
+                    $abilityFavorite->ability_id = $findAbility->id;
                     DB::commit();
                     $abilityFavorite->save();
                 }

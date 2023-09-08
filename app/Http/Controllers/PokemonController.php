@@ -40,16 +40,15 @@ class PokemonController extends Controller
             // get data from Api
             $res = Helper::get($this->endpoint, compact('limit', 'offset'));
             $data = $res['results'];
-
-            $pokemons = array_filter($data, function ($curr) {
-                return !Favorite::where('name', $curr['name'])->exists();
-            });
-
             $result = array_map(function ($curr) {
                 $pokemon = Helper::get("{$this->endpoint}/" . $curr['name']);
                 $curr['abilities'] = $pokemon['abilities'];
+                $curr['is_favorite'] = false;
+                if (Favorite::where('name', $curr['name'])->exists()) {
+                    $curr['is_favorite'] = true;
+                }
                 return $curr;
-            }, $pokemons);
+            }, $data);
 
             return Json::response($result);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {

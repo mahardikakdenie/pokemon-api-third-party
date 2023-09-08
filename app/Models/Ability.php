@@ -15,8 +15,8 @@ class Ability extends Model
         Helper::entities($query, $entities);
     }
 
-    function favorite()
+    function ability()
     {
-        return $this->hasMany(AbilityFavorite::class, 'favorite_id');
+        return $this->hasMany(AbilityFavorite::class, 'ability_id');
     }
 }

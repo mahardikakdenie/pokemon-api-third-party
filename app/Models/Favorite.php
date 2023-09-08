@@ -10,9 +10,9 @@ class Favorite extends Model
 {
     use HasFactory;
 
-    function ability()
+    function favorite()
     {
-        return $this->hasMany(AbilityFavorite::class, 'ability_id');
+        return $this->hasMany(AbilityFavorite::class, 'favorite_id');
     }
 
     function scopeEntities($query, $entities)
