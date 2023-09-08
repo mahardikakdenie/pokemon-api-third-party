@@ -17,7 +17,7 @@ class PokemonController extends Controller
     private $endpoint = 'https://pokeapi.co/api/v2/pokemon';
     /**
      * Display a listing of the resource.
-     * @param Request 
+     * @param Request
      */
     public function index(Request $request)
     {
@@ -39,8 +39,6 @@ class PokemonController extends Controller
 
             // get data from Api
             $res = Helper::get($this->endpoint, compact('limit', 'offset'));
-            $data = $res['results'];
-
             $data = $res['results'];
 
             $pokemons = array_filter($data, function ($curr) {
